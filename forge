@@ -1,0 +1,45 @@
+#!/usr/bin/env php
+<?php
+
+$basePath = __DIR__;
+require_once $basePath . '/config/autoload.php';
+
+$commandsPath = $basePath . '/cli/';
+
+$argv = $_SERVER['argv'];
+$command = $argv[1] ?? null;
+
+$logo = "
+ _____                         ____   _   _  ____  
+|  ___|___   _ __  __ _   ___ |  _ \ | | | ||  _ \ 
+| |_  / _ \ | '__|/ _` | / _ \| |_) || |_| || |_) |
+|  _|| (_) || |  | (_| ||  __/|  __/ |  _  ||  __/ 
+|_|   \___/ |_|   \__, | \___||_|    |_| |_||_|    
+                  |___/                            
+";
+
+if (!$command) {
+	echo $logo . "\n";
+	echo "==================================================\n";
+	echo "Welcome to the ForgePHP framework CLI tool.\n";
+	echo "Usage: php forge <command> [options]\n\n";
+
+	echo "Available commands:\n";
+	foreach (glob($commandsPath . '*.php') as $file) {
+		$command = basename($file, '.php');
+		$command = str_replace('_', ':', $command);
+		echo "  - $command\n";
+	}
+	exit(1);
+}
+
+$commandFile = $commandsPath . str_replace(':', '_', $command) . '.php';
+
+if (!file_exists($commandFile)) {
+	echo "Error: Command \"$command\" not found.\n";
+	exit(2);
+}
+
+require_once $commandFile;
+
+$args = array_slice($argv, 2);

@@ -1,0 +1,25 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L]
+
+Options -Indexes
+
+ServerSignature Off
+
+<FilesMatch "\.(htaccess|htpasswd|ini|phps|fla|psd|log|sh|bak|swp|sql)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^(config\.php|\.env|\.git|\.htaccess)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options nosniff
+</IfModule>
